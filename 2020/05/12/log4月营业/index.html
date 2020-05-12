@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>超市月报表关键指标计算 | 胡山海</title>
+  <title>log4月营业 | 胡山海</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -76,15 +76,6 @@
             <!-- Dropdown Menu -->
 			 
             
-        	<li>
-        		<a class="sb-toggle-submenu">Categories<span class="sb-caret"></span></a>
-            	<ul class="sb-submenu">
-				  	
-				    <li><a href="/categories/Diary/" class="animsition-link">Diary<small>(1)</small></a></li>
-				    
-				</ul>
-        	</li>
-			
             
             <li>
                 <a class="sb-toggle-submenu">Links<span class="sb-caret"></span></a>
@@ -175,19 +166,13 @@
           2020-05-12
       </time>
     
-    
-    | 
-    <a href='/tags/PS3/'>PS3</a>,
-    
-    <a href='/tags/Games/'>Games</a>
-    
-    
 </span>
-                <h1>超市月报表关键指标计算</h1>
+                <h1>log4月营业</h1>
             </div>
         </div>
         <div class="col-md-8 col-md-offset-2">
-      		<p><strong>要求：</strong></p>
+      		<hr>
+<h2 id="title-超市月报表关键指标计算-标题"><a href="#title-超市月报表关键指标计算-标题" class="headerlink" title="title: 超市月报表关键指标计算 # 标题"></a>title: 超市月报表关键指标计算 # 标题</h2><p><strong>要求：</strong></p>
 <ol>
 <li>计算2017年4月销售额、客流量、客单价</li>
 <li>计算2017年4月的同比销售额、客流量、客单价</li>
@@ -221,7 +206,13 @@
 <li><p>客单价 = 销售额/客流量</p>
 </li>
 </ul>
-<h1 id="导入相关库"><a href="#导入相关库" class="headerlink" title="导入相关库"></a>导入相关库</h1><p>‘’’python<br>%matplotlib inline #将matplotlib的图表直接嵌入到Notebook之中<br>import pandas as pd<br>import numpy as np<br>import matplotlib.pyplot as plt<br>from dateutil.parser import parse<br>plt.rcParams[“font.sans-serif”]=’SimHei’#解决中文乱码<br>plt.rcParams[‘axes.unicode_minus’] = False#解决负号无法正常显示的问题<br>‘’’</p>
+<h1 id="导入相关库"><a href="#导入相关库" class="headerlink" title="导入相关库"></a>导入相关库</h1><pre><code class="python">%matplotlib inline <span class="comment">#将matplotlib的图表直接嵌入到Notebook之中</span>
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">from</span> dateutil.parser <span class="keyword">import</span> parse
+plt.rcParams[<span class="string">"font.sans-serif"</span>]=<span class="string">'SimHei'</span><span class="comment">#解决中文乱码</span>
+plt.rcParams[<span class="string">'axes.unicode_minus'</span>] = <span class="literal">False</span><span class="comment">#解决负号无法正常显示的问题</span></code></pre>
 
             <div class="clearfix"></div>
             <hr class="nogutter">
