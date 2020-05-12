@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>Archives: 2020 | 胡山海</title>
+  <title>log4月营业 | 胡山海</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -59,7 +59,7 @@
 </head>
 
 <!--
-<body class="home-template">
+<body class="post-template">
 -->
 <body id="index" class="lightnav animsition">
 
@@ -156,78 +156,131 @@
         <!-- ============================ Header & Logo bar =========================== -->
 
 
-      <!-- ============================ Hero Image =========================== -->
-
-<section id="hero" class="scrollme">
-    <div class="container-fluid element-img" style="background: url(/img/lv.jpg) no-repeat center center fixed;background-size: cover">
-        <div class="row">
-            <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 vertical-align cover boost text-center">
-                <div class="center-me animateme" data-when="exit" data-from="0" data-to="0.6" data-opacity="0" data-translatey="100">
-                    <div>
-                        
-                        <h2>NO DAY <span>BUT</span> TODAY</h2>
-                        <p></p>
-                        
-                        <h2></h2>
-                        <p></p>
-                        
-
-                    </div>
-                </div>
-            </div>
-            <!-- // .col-md-12 -->
-        </div>
-        <div class="herofade beige-dk"></div>
-    </div>
-</section>
-
-<!-- Height spacing helper -->
-<div class="heightblock"></div>
-<!-- // End height spacing helper -->
-
-<!-- ============================ END Hero Image =========================== -->
-
-
-
-
-<section id="services">
+      
+<section id="intro">
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="row boxes">
-                    
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2020/05/12/log4月营业/">log4月营业</a></h4>
-                            
-                            <p><time datetime="2020-05-12T02:45:07.530Z"><a href="/2020/05/12/log4月营业/">2020-05-12</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2020/05/07/log3/">摩洛哥游记</a></h4>
-                            
-                            <p><time datetime="2020-05-07T09:05:52.746Z"><a href="/2020/05/07/log3/">2020-05-07</a></time></p>
-                        </div>
-                    
-                </div>
-            </div>    
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2020-05-12T02:45:07.530Z" itemprop="datePublished">
+          2020-05-12
+      </time>
+    
+</span>
+                <h1>log4月营业</h1>
+            </div>
         </div>
-    </div>
-</section> 
+        <div class="col-md-8 col-md-offset-2">
+      		<p><strong>要求：</strong></p>
+<ol>
+<li>计算2017年4月销售额、客流量、客单价</li>
+<li>计算2017年4月的同比销售额、客流量、客单价</li>
+<li>计算2017年4月的环比销售额、客流量、客单价</li>
+</ol>
+<p><strong>题目说明：</strong></p>
+<ul>
+<li>销售额 = 售价 乘 销量 = [“Price”] 乘 [“Qty”]</li>
+<li>客流量 = 订单量（客流量用订单量代替）</li>
+<li>客单价 = 销售额/客流量</li>
+<li>同比是指相邻时间段内的相同时间段内的数据之比，2017年的4月的同比是2016年4月的数据。</li>
+<li>环比是指相邻时间段内的数据之比，2017年4月的环比是2017年3月的数据。（这里没有2017年3月的数据，用2017年1月的数据代替）。</li>
+</ul>
+<p><strong>业务背景：</strong></p>
+<ul>
+<li>你现在是一个连锁超市的数据分析师，你需要知道你们公司本月的营业情况如何，营业情况的核心指标用销售额、客流量、客单价这三个指标来反映，这三个指标将会直接影响公司的盈利情况。</li>
+<li>你如何去评判这个三个指标的发展情况呢？肯定是先想到对比，因为只有对比才有好坏之分，那么和谁去对比呢，最先对比的就是相邻的时间段，也就是和上个月比；再然后就是和相邻时间段的同一时间段，也就是去年的同期做对比，这样就可以综合反映本月各指标的发展情况。</li>
+</ul>
+<p><strong>计算逻辑说明：</strong></p>
+<ul>
+<li><p>我们要计算的是某一时间段内的各指标数据，那么首先需要把这一时间段的明细数据索引出来，然后再在这段时间范围内的基础上去计算各指标。</p>
+</li>
+<li><p>目前明细数据中已有的时间字段是SDate和STime,SDate是非时间格式，需要将该字段解析为时间格式，STime是时间格式，但是该字段是分秒粒度的，我们目前需要月维度的数据，所以需要将这两个字段中其中一个转化为月维度的数据，这里选择将SDate转化为月维度的数据。</p>
+</li>
+<li><p>有月维度数据以后，我们就可以通过让月等于你要计算的月份，比如让月份等于4，就是把4月的数据筛选出来，然后在筛选出来的数据上进行各指标求取。</p>
+</li>
+<li><p>销售额 = 售价 乘 销量 = [“Price”] 乘 [“Qty”]</p>
+</li>
+<li><p>客流量 = 订单量（客流量用订单量代替）= SheetID去重以后计数</p>
+</li>
+<li><p>客单价 = 销售额/客流量</p>
+</li>
+</ul>
+<h1 id="导入相关库"><a href="#导入相关库" class="headerlink" title="导入相关库"></a>导入相关库</h1><p>“<code>py
+%matplotlib inline #将matplotlib的图表直接嵌入到Notebook之中
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from dateutil.parser import parse
+plt.rcParams[&quot;font.sans-serif&quot;]=&#39;SimHei&#39;#解决中文乱码
+plt.rcParams[&#39;axes.unicode_minus&#39;] = False#解决负号无法正常显示的问题
+“</code></p>
 
-<section id="statement">
-    <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
-        <div class="row">
-            <p>आत्म ग्राह</p>
+            <div class="clearfix"></div>
+            <hr class="nogutter">
         </div>
+        <nav class="m-pagination col-md-8 col-md-offset-2 col-sm-24" role="pagination">
+    
+    
+    <a class="pull-right" href="/2020/05/07/log3/">
+        摩洛哥游记 →
+    </a>
+    
+</nav>
+
+        <div class="col-md-8 col-md-offset-2 col-sm-24"><script type="text/javascript">
+  /**
+   * 搜狐畅言
+   */
+
+  /*
+  document.write('<div id="SOHUCS" sid="' + window.location.pathname.slice(1) + '" ></div>');
+
+  window.onload = function () {
+    (function () {
+      var appid = 'cytXXXX';
+      var conf = 'prod_xxxxxxxxxxxxxxxxx';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      var loadJs = function (d, a, id) {
+        var c = document.getElementsByTagName("head")[0] || document.head || document.documentElement;
+        var b = document.createElement("script");
+        b.setAttribute("type", "text/javascript");
+        b.setAttribute("charset", "UTF-8");
+        b.setAttribute("src", d);
+        if (id) {
+          b.setAttribute("id", id);
+        }
+        if (typeof a === "function") {
+          if (window.attachEvent) {
+            b.onreadystatechange = function () {
+              var e = b.readyState;
+              if (e === "loaded" || e === "complete") {
+                b.onreadystatechange = null;
+                a()
+              }
+            }
+          } else {
+            b.onload = a
+          }
+        }
+        c.appendChild(b)
+      };
+
+      loadJs("https://changyan.sohu.com/upload/changyan.js", function () {
+        window.changyan.api.config({
+          appid: appid,
+          conf: conf
+        })
+      });
+    })();
+  }
+  */
+
+</script>
+</div>
     </div>
 </section>
+
+
       
 <!-- ============================ Footer =========================== -->
 
