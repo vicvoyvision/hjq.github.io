@@ -172,7 +172,9 @@
         </div>
         <div class="col-md-8 col-md-offset-2">
       		<hr>
-<h2 id="title-超市月报表关键指标计算-标题"><a href="#title-超市月报表关键指标计算-标题" class="headerlink" title="title: 超市月报表关键指标计算 # 标题"></a>title: 超市月报表关键指标计算 # 标题</h2><p><strong>要求：</strong></p>
+<p>title: 超市月报表关键指标计算 # 标题<br>urlname: Visualization-of-KPI-inmonthly-reports-of-supermarkets</p>
+<hr>
+<p><strong>要求：</strong></p>
 <ol>
 <li>计算2017年4月销售额、客流量、客单价</li>
 <li>计算2017年4月的同比销售额、客流量、客单价</li>
@@ -204,8 +206,11 @@
 <li><p>客流量 = 订单量（客流量用订单量代替）= SheetID去重以后计数</p>
 </li>
 <li><p>客单价 = 销售额/客流量</p>
+<br />
+<br />
 </li>
 </ul>
+<hr>
 <h1 id="导入相关库"><a href="#导入相关库" class="headerlink" title="导入相关库"></a>导入相关库</h1><pre><code class="python">%matplotlib inline <span class="comment">#将matplotlib的图表直接嵌入到Notebook之中</span>
 <span class="keyword">import</span> pandas <span class="keyword">as</span> pd
 <span class="keyword">import</span> numpy <span class="keyword">as</span> np
@@ -213,6 +218,155 @@
 <span class="keyword">from</span> dateutil.parser <span class="keyword">import</span> parse
 plt.rcParams[<span class="string">"font.sans-serif"</span>]=<span class="string">'SimHei'</span><span class="comment">#解决中文乱码</span>
 plt.rcParams[<span class="string">'axes.unicode_minus'</span>] = <span class="literal">False</span><span class="comment">#解决负号无法正常显示的问题</span></code></pre>
+<br />
+# 导入数据 
+
+<pre><code class="python">data_2017 = pd.read_csv(<span class="string">r"201701-201705.csv"</span>,parse_dates = [<span class="string">"STime"</span>])
+data_2017.head()</code></pre>
+<p><img src="1.png" alt=""></p>
+<pre><code class="python">data_2016 = pd.read_csv(<span class="string">r"201601-201605.csv"</span>,parse_dates = [<span class="string">"STime"</span>])</code></pre>
+<p>删除重复数据</p>
+<pre><code class="python">data_2016 = data_2016.drop_duplicates()
+data_2017 = data_2017.drop_duplicates()
+data_2017.shape</code></pre>
+<p>(855620, 10)</p>
+<br />
+# 数据预处理
+
+<pre><code class="python">data_2016[<span class="string">"date"</span>] = [parse(str(time)) <span class="keyword">for</span> time <span class="keyword">in</span> data_2016[<span class="string">"SDate"</span>]]
+data_2017[<span class="string">"date"</span>] = [parse(str(time)) <span class="keyword">for</span> time <span class="keyword">in</span> data_2017[<span class="string">"SDate"</span>]]
+
+data_2016[<span class="string">"月份"</span>] = [time.month <span class="keyword">for</span> time <span class="keyword">in</span> data_2016[<span class="string">"date"</span>]]
+data_2017[<span class="string">"月份"</span>] = [time.month <span class="keyword">for</span> time <span class="keyword">in</span> data_2017[<span class="string">"date"</span>]]
+
+data_2017[<span class="string">"月份"</span>].unique()
+
+array([<span class="number">1</span>, <span class="number">4</span>], dtype=int64)</code></pre>
+<br />
+## 本月累计数据计算 
+
+<pre><code class="python">April_data = data_2017[data_2017[<span class="string">"date"</span>]&gt;=parse(<span class="string">"2017-04-01"</span>)]
+<span class="comment"># parser是根据字符串解析成datetim</span></code></pre>
+<br />
+#四月累计销售额
+
+<pre><code class="python">sale_sum = (April_data[<span class="string">"Price"</span>]*April_data[<span class="string">"Qty"</span>]).sum()
+sale_sum</code></pre>
+<p>3041195.2679000003</p>
+<p>#四月累计客流用订单量代替</p>
+<pre><code class="python">traffic_sum = April_data[<span class="string">"SheetID"</span>].drop_duplicates().count()
+traffic_sum</code></pre>
+<p>91831</p>
+<pre><code class="python"><span class="comment">#四月累计客单价</span>
+Customer_price = sale_sum/traffic_sum
+Customer_price</code></pre>
+<p>33.11730535331207</p>
+<br />
+## 上月同期计算
+
+<pre><code class="python">March_data = data_2017[(data_2017[<span class="string">"date"</span>]&gt;=parse(<span class="string">"2017-01-01"</span>))&amp;(data_2017[<span class="string">"date"</span>]&lt;=parse(<span class="string">"2017-01-31"</span>))]
+<span class="comment"># 选择上个月的(1月)</span></code></pre>
+<pre><code class="python"><span class="comment">#一月累计销售额</span>
+sale_sum_1 = (March_data[<span class="string">"Price"</span>]*March_data[<span class="string">"Qty"</span>]).sum()
+sale_sum_1</code></pre>
+<p>4674895.95622</p>
+<pre><code class="python"><span class="comment">#一月累计客流用订单量代替</span>
+traffic_sum_1 = March_data[<span class="string">"SheetID"</span>].drop_duplicates().count()
+traffic_sum_1</code></pre>
+<p>100648</p>
+<pre><code class="python"><span class="comment">#一月累计客单价</span>
+Customer_price_1 = sale_sum_1/traffic_sum_1
+Customer_price_1</code></pre>
+<p>46.44797667335665</p>
+<h2 id="去年同期计算"><a href="#去年同期计算" class="headerlink" title="去年同期计算"></a>去年同期计算</h2><pre><code class="python">last_April = data_2016[(data_2016[<span class="string">"date"</span>]&gt;=parse(<span class="string">"2016-04-01"</span>))]</code></pre>
+<pre><code class="python"><span class="comment">#去年同期累计销售额</span>
+sale_sum_last = (last_April[<span class="string">"Price"</span>]*last_April[<span class="string">"Qty"</span>]).sum()
+<span class="comment">#去年同期累计客流用订单量代替</span>
+traffic_sum_last = last_April[<span class="string">"SheetID"</span>].drop_duplicates().count()
+<span class="comment">#去年同期客单价</span>
+Customer_price_last = sale_sum_last/traffic_sum_last
+Customer_price_last</code></pre>
+<p>35.27396908333941</p>
+<br />
+## 编写函数减少代码 
+
+<pre><code class="python"><span class="function"><span class="keyword">def</span> <span class="title">get_month_data</span><span class="params">(data)</span>:</span>
+    sale = (data[<span class="string">"Price"</span>]*data[<span class="string">"Qty"</span>]).sum()
+    traffic = data[<span class="string">"SheetID"</span>].drop_duplicates().count()
+    price = sale/traffic
+    <span class="keyword">return</span> (sale,traffic,price)</code></pre>
+<pre><code class="python">get_month_data(last_April)</code></pre>
+<p>(3991031.93926, 109648, 36.398584007551435)</p>
+<pre><code class="python">get_month_data(March_data)</code></pre>
+<p>(4874930.787089999, 100648, 48.43544617965582)</p>
+<br />
+## 报表汇总 
+
+<pre><code class="python">data = {<span class="string">"本月累计"</span>:[round(sale_sum),round(traffic_sum),round(Customer_price)],
+        <span class="string">"环比上月"</span>:[round(sale_sum_1),round(traffic_sum_1),round(Customer_price_1)],
+        <span class="string">"去年同期"</span>:[round(sale_sum_last),round(traffic_sum_last),round(Customer_price_last)]}
+columns = [<span class="string">"本月累计"</span>,<span class="string">"环比上月"</span>,<span class="string">"去年同期"</span>]
+index = [<span class="string">"销售额"</span>,<span class="string">"客流量"</span>,<span class="string">"客单价"</span>]
+
+month_report = pd.DataFrame(data,index = index,columns = columns)
+month_report</code></pre>
+<p><img src="2.png" alt=""></p>
+<pre><code class="python">month_report[<span class="string">"环比"</span>] = (month_report[<span class="string">"本月累计"</span>]/month_report[<span class="string">"环比上月"</span>] - <span class="number">1</span>)
+month_report[<span class="string">"同比"</span>] = (month_report[<span class="string">"本月累计"</span>]/month_report[<span class="string">"去年同期"</span>] - <span class="number">1</span>)
+month_report</code></pre>
+<p><img src="3.png" alt=""></p>
+<pre><code class="python">month_report[[<span class="string">"本月累计"</span>,<span class="string">"环比上月"</span>,<span class="string">"环比"</span>,<span class="string">"去年同期"</span>,<span class="string">"同比"</span>]]</code></pre>
+<p><img src="4.png" alt=""></p>
+<br />
+<br />
+* * *
+**可视化：**
+1.    计算2017年4月每日的销售额、客流量、客单价，并用图表形式展现
+2.    计算2017年4月中周一至周日的销售额、客流量、客单价，并用图表形式展现
+3.    随机选取2017年4月中的一天，计算一天中不同小时的销售额、客流量、客单价，并用图表形式展现
+
+<p><strong>题目说明：</strong></p>
+<ul>
+<li>销售额 = 售价 乘 销量 = [“Price”] 乘 [“Qty”]</li>
+<li>客流量 = 订单量（客流量用订单量代替）</li>
+<li>客单价 = 销售额/客流量</li>
+</ul>
+<p><strong>业务背景：</strong></p>
+<ul>
+<li><p>通过第一节我们已经判断出了17年4月各指标发展情况的好坏，作为数据分析师，不管业务出现好或者坏，都要去追寻为什么？在追寻为什么的时候，就可以结合业务具体去看是因为哪方面的变化，引起了某一段时间内整体指标的变化。</p>
+</li>
+<li><p>这一节选择时间维度去看一下17年4月不同时间维度各指标的变化情况。</p>
+</li>
+</ul>
+<p><strong>计算逻辑说明：</strong></p>
+<ol>
+<li>分日的各指标计算类似于分月的各指标计算，只不过这里需要将时间转化为日维度的数据，然后用日期去做透视表就可以算出每一天的各指标情况。</li>
+<li>分周、分小时与分日的计算逻辑一致，需要分别把时间转化为周维度、以及小时维度。</li>
+</ol>
+<hr>
+<h1 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h1><pre><code class="python">data_2017 = pd.read_csv(<span class="string">r"201701-201705.csv"</span>,parse_dates = [<span class="string">"STime"</span>])
+data_2017 = data_2017.drop_duplicates()
+<span class="comment">#将数值型日期作为index</span>
+data_2017=data_2017.set_index(<span class="string">"SDate"</span>,<span class="literal">True</span>)
+data_2017.head()</code></pre>
+<p>添加两个字段，分别是月份和日期。可以使用.unique()来查看数据包含多少月份，日期分别是哪些天。 要计算2017年4月每日的销售额、客流量、客单价，则先选取四月的数据。</p>
+<pre><code class="python">data_2017[<span class="string">"month"</span>] = [time.month <span class="keyword">for</span> time <span class="keyword">in</span> data_2017[<span class="string">"STime"</span>]]
+data_2017[<span class="string">"day"</span>] = [time.day <span class="keyword">for</span> time <span class="keyword">in</span> data_2017[<span class="string">"STime"</span>]]</code></pre>
+<p>计算2017年M月每日的销售额、客流量、客单价，并用图表形式展现 传入M月份</p>
+<pre><code class="python"><span class="function"><span class="keyword">def</span> <span class="title">get_day_data</span><span class="params">(M,data)</span>:</span> <span class="comment"># 传入yue</span>
+    data=data[data[<span class="string">"month"</span>]==M]
+    sale=(data[<span class="string">"Price"</span>]*data[<span class="string">"Qty"</span>]).groupby(by=<span class="string">'SDate'</span>).sum() <span class="comment">#当月每天的销售额</span>
+    <span class="comment">#sale = (data["Price"]*data["Qty"]).sum() #每笔订单的销售额</span>
+    traffic =data[<span class="string">"SheetID"</span>].drop_duplicates().groupby(<span class="string">"SDate"</span>).count()  <span class="comment">#每日客流量 </span>
+    price = sale/traffic <span class="comment"># 返回的是series</span>
+    <span class="keyword">return</span> pd.DataFrame({<span class="string">"sale"</span>:sale,<span class="string">"traffic"</span>:traffic,<span class="string">"price"</span>:price})
+get_day_data(<span class="number">4</span>,data_2017)</code></pre>
+<p><img src="5.png" alt=""></p>
+<pre><code class="python">april=get_day_data(<span class="number">4</span>,data_2017)
+grouped_price=april.price
+grouped_price.plot(title = <span class="string">"四月客单价分日趋势图"</span>)</code></pre>
+<p><img src="6.png" alt=""></p>
+<pre><code class="python"></code></pre>
 
             <div class="clearfix"></div>
             <hr class="nogutter">
